@@ -1,5 +1,6 @@
 require 'cloudclone'
 require 'heroku'
+require 'cloudclone/group'
 
 class Cloudclone::Client
 
@@ -9,8 +10,9 @@ class Cloudclone::Client
 
   def create(name_prefix, no_of_apps)
     (1..no_of_apps).inject([]) do |names, n|
-      names << @heroku.create("cc-#{name_prefix}-#{n}")
+      @heroku.create("cc-#{name_prefix}-#{n}")
     end
+    Cloudclone::Group.new(name_prefix)
   end
 
   def list

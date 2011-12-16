@@ -25,7 +25,7 @@ describe Cloudclone::Client do
         Heroku::Client.any_instance.stub(:create).with(name).
           and_return(name)
       end
-      subject.create('prefix', 2).should == ['cc-prefix-1', 'cc-prefix-2']
+      subject.create('prefix', 2).should be_kind_of(Cloudclone::Group)
     end
   end
 
