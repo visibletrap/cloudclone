@@ -40,4 +40,17 @@ describe Cloudclone::Client do
     end
   end
 
+  describe "#destroy" do
+    it "should call Group to destroy" do
+      target_group = mock(Cloudclone::Group)
+      target_group.stub(:name).and_return("group_name")
+      other_group = mock(Cloudclone::Group)
+      other_group.stub(:name).and_return("other_group")
+      subject.stub(:groups).and_return([other_group, target_group])
+      target_group.should_receive(:destroy)
+
+      subject.destroy("group_name")
+    end
+  end
+
 end

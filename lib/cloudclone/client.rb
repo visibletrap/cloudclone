@@ -20,4 +20,8 @@ class Cloudclone::Client
       map { |e| e.captures }.flatten
   end
 
+  def destroy(group_name)
+    groups.select { |g| g.name == group_name }.each { |g| g.destroy }
+  end
+
 end
