@@ -1,15 +1,8 @@
-require 'spec_helper'
 require 'cloudclone/client'
 
 describe Cloudclone::Client do
 
   subject { Cloudclone::Client.new('username', 'password') }
-
-  describe "#new" do
-    it "receive username and password of Heroku account" do
-      Cloudclone::Client.new('username', 'password').should_not be_nil
-    end
-  end
 
   describe "#create" do
     it "should create Heroku apps" do
@@ -18,14 +11,6 @@ describe Cloudclone::Client do
           with("cc-prefix-#{n}")
       end
       subject.create('prefix', 10)
-    end
-    it "should return created app names as an array" do
-      (1..2).each do |n|
-        name = "cc-prefix-#{n}"
-        Heroku::Client.any_instance.stub(:create).with(name).
-          and_return(name)
-      end
-      subject.create('prefix', 2).should be_kind_of(Cloudclone::Group)
     end
   end
 
@@ -40,14 +25,23 @@ describe Cloudclone::Client do
     end
   end
 
+  describe "#groups" do
+    it "should use result from list to return as group objects" do
+      names = ["groupa", "groupb"]
+      subject.should_receive(:list).and_return(names)
+      groups = subject.groups
+      groups.count.should == names.count
+      names.should include(groups[0].name)
+      names.should include(groups[1].name)
+    end
+  end
+
   describe "#destroy" do
     it "should call Group to destroy" do
-      target_group = mock(Cloudclone::Group)
-      target_group.stub(:name).and_return("group_name")
-      other_group = mock(Cloudclone::Group)
-      other_group.stub(:name).and_return("other_group")
-      subject.stub(:groups).and_return([other_group, target_group])
-      target_group.should_receive(:destroy)
+      group = mock(Cloudclone::Group)
+      group.stub(:name).and_return("group_name")
+      subject.stub(:groups).and_return([group])
+      group.should_receive(:destroy)
 
       subject.destroy("group_name")
     end
