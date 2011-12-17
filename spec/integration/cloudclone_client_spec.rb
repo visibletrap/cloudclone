@@ -3,8 +3,8 @@ require 'cloudclone/group'
 
 describe "Cloudclone" do
 
-  let(:username) { "" }
-  let(:password) { "" }
+  let(:username) { ENV['HEROKU_USERNAME'] }
+  let(:password) { ENV['HEROKU_PASSWORD'] }
 
   subject { Cloudclone::Client.new(username, password) }
 
@@ -19,14 +19,17 @@ describe "Cloudclone" do
   describe "#create" do
     let(:group_name) { "create-group-name" }
     let(:app_names) { (1..2).map{ |n| "cc-#{group_name}-#{n}"} }
+
+    before(:all) do
+      @output = subject.create(group_name, 2)
+    end
     it "create certain amount of heroku apps which name contains group name" do
-      subject.create(group_name, 2)
       heroku.list.map{ |e| e[0] }.should == app_names
     end
     it "should return Cloundclone::Group object" do
-      subject.create(group_name, 2).should be_kind_of(Cloudclone::Group)
+      @output.should be_kind_of(Cloudclone::Group)
     end
-    after do
+    after(:all) do
       app_names.each{ |a| heroku.destroy(a) }
     end
   end
