@@ -45,7 +45,7 @@ class Cloudclone::Client
       end
     ensure
       Dir.chdir('..')
-      FileUtils.rm_rf('../cloudclone/cloudclone-server')
+      FileUtils.rm_rf('cloudclone-server')
     end
   end
 
