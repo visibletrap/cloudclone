@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email       = ["visibletrap@gmail.com"]
   s.homepage    = ""
   s.summary     = %q{Multi cloud service instances management}
-  s.description = %q{Cloudclone help you easily manage tons of cloud service instances}
+  s.description = %q{This gem enable you to easily utilize free Heroku apps to build your own web load testing servers.}
 
   s.rubyforge_project = "cloudclone"
 
