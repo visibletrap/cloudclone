@@ -20,11 +20,24 @@ describe Cloudclone::Group do
     it "should call Heroku to destroy every apps in group" do
       email = "any@em.ail"
       apps = [["cc-#{group_name}-1", email], ["cc-#{group_name}-2", email],
-        ["otherapp"], email]
+        ["otherapp", email], ["cc-othergroup-1", email]]
       heroku.should_receive(:list).and_return(apps)
       heroku.should_receive(:destroy).with(apps[0][0])
       heroku.should_receive(:destroy).with(apps[1][0])
+      heroku.should_not_receive(:destroy).with(apps[2][0])
+      heroku.should_not_receive(:destroy).with(apps[3][0])
       subject.destroy
+    end
+  end
+
+  describe "#request" do
+    it "should request with provide link as url paramter to servers" do
+      app_names = ["cc-app-1", "cc-app-2", "cc-app-3"]
+      subject.stub(:app_names).and_return(app_names)
+      app_names.each do |n|
+        RestClient.should_receive(:get).with("http://#{n}.heroku.com/?url=http://www.google.com")
+      end
+      subject.request("http://www.google.com")
     end
   end
 
