@@ -6,6 +6,7 @@ describe Cloudclone::Client do
 
   describe "#create" do
     it "should create Heroku apps" do
+      subject.should_receive(:deploy).with((1..10).map{ |i|"cc-prefix-#{i}" })
       (1..10).each do |n|
         Heroku::Client.any_instance.should_receive(:create).
           with("cc-prefix-#{n}")
@@ -22,6 +23,22 @@ describe Cloudclone::Client do
       Heroku::Client.any_instance.should_receive(:list).
         and_return(heroku_response)
       subject.list.should == ['groupa', 'groupb']
+    end
+  end
+
+  describe "#group" do
+    before { subject.stub(:list).and_return(["group_name"]) }
+    context "group existing" do
+      it "should create group object" do
+        Cloudclone::Group.should_receive(:new).with("group_name", kind_of(Heroku::Client))
+        subject.group("group_name")
+      end
+    end
+    context "group not existing" do
+      it "should do nothing" do
+        Cloudclone::Group.should_not_receive(:new)
+        subject.group("not_group_name")
+      end
     end
   end
 

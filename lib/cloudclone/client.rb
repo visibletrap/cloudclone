@@ -11,25 +11,19 @@ class Cloudclone::Client
   end
 
   def create(group_name, no_of_apps)
-    begin
-      clone_server
-      Dir.chdir('cloudclone-server')
-      (1..no_of_apps).each do |n|
-        app_name = "cc-#{group_name}-#{n}"
-        @heroku.create(app_name)
-        add_remote(app_name)
-        push(app_name)
-      end
-    ensure
-      Dir.chdir('..')
-      FileUtils.rm_rf('../cloudclone/cloudclone-server')
-    end
+    app_names = (1..no_of_apps).map { |n| "cc-#{group_name}-#{n}" }
+    app_names.each { |n| @heroku.create(n) }
+    deploy(app_names)
     Cloudclone::Group.new(group_name, @heroku)
   end
 
   def list
     @heroku.list.map { |e| e[0].match(/^cc-(.+)-1$/) }.compact.
       map { |e| e.captures }.flatten
+  end
+
+  def group(group_name)
+    Cloudclone::Group.new(group_name, @heroku) if list.include?(group_name)
   end
 
   def destroy(group_name)
@@ -41,6 +35,20 @@ class Cloudclone::Client
   end
 
   private
+  def deploy(app_names)
+    clone_server
+    Dir.chdir('cloudclone-server')
+    begin
+      app_names.each do |n|
+        add_remote(n)
+        push(n)
+      end
+    ensure
+      Dir.chdir('..')
+      FileUtils.rm_rf('../cloudclone/cloudclone-server')
+    end
+  end
+
   def clone_server
     `git clone git://github.com/visibletrap/cloudclone-server.git`
   end

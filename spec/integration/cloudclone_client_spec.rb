@@ -46,4 +46,40 @@ describe "Cloudclone" do
     end
   end
 
+  describe "#list" do
+    let(:group_name) { ["list-group-name-1", "list-group-name-2"] }
+    it "should return group names" do
+      subject.create(group_name[0], 1)
+      subject.create(group_name[1], 1)
+
+      subject.list.should == group_name
+    end
+    after do
+      group_name.each{ |n| heroku.destroy("cc-#{n}-1") }
+    end
+  end
+
+  describe "#group" do
+    before(:all) do
+      subject.create("valid-group-name", 1)
+    end
+    context "valid group name" do
+      it { subject.group("valid-group-name").should be_kind_of(Cloudclone::Group) }
+    end
+    context "invalid group name" do
+      it { subject.group("invali-group-name").should be_nil }
+    end
+    after(:all) do
+      heroku.destroy("cc-valid-group-name-1");
+    end
+  end
+
+  describe "#groups" do
+
+  end
+
+  describe "#request" do
+
+  end
+
 end
