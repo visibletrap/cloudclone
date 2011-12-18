@@ -21,7 +21,7 @@ class Cloudclone::Group
 
   private
   def app_names
-    all_app_names.select{ |n| n =~ /^cc-#{@group_name}-\d$/ }
+    all_app_names.select{ |n| n =~ /^cc-#{@group_name}-\d+$/ }
   end
 
   def all_app_names

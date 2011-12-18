@@ -2,7 +2,7 @@ describe Cloudclone::Group do
 
   let(:group_name) { "group-name" }
   let(:heroku) { mock(Heroku::Client).as_null_object }
-  subject { Cloudclone::Group.new("group-name", heroku) }
+  subject { Cloudclone::Group.new(group_name, heroku) }
 
   describe "#new" do
     it "should receive group name and Heroku object" do
@@ -32,8 +32,8 @@ describe Cloudclone::Group do
 
   describe "#request" do
     it "should request with provide link as url paramter to servers" do
-      app_names = ["cc-app-1", "cc-app-2", "cc-app-3"]
-      subject.stub(:app_names).and_return(app_names)
+      app_names = (1..20).map{ |i| "cc-#{group_name}-#{i}" }
+      subject.stub(:all_app_names).and_return(app_names)
       app_names.each do |n|
         RestClient.should_receive(:get).with("http://#{n}.heroku.com/?url=http://www.google.com")
       end
