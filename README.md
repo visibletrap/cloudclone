@@ -1,7 +1,7 @@
 Cloudclone
 ==========
 
-Library for manage multiple Heroku apps to do parallel HTTP request to certain servers.
+Library for manage multiple Heroku apps to do parallel HTTP request to certain web servers.
 
 Current key features
 --------------------
