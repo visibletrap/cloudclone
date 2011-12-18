@@ -24,6 +24,7 @@ Current key features
 
 ##Requirement
 
+* [Ruby](http://www.ruby-lang.org/)
 * [git](http://git-scm.com/)
 * [Heroku](http://www.heroku.com) account with ssh key access installed.
 
