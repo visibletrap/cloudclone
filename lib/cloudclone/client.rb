@@ -10,11 +10,21 @@ class Cloudclone::Client
     @heroku = Heroku::Client.new(username, password)
   end
 
-  def create(name_prefix, no_of_apps)
-    (1..no_of_apps).each do |n|
-      @heroku.create("cc-#{name_prefix}-#{n}")
+  def create(group_name, no_of_apps)
+    begin
+      clone_server
+      Dir.chdir('cloudclone-server')
+      (1..no_of_apps).each do |n|
+        app_name = "cc-#{group_name}-#{n}"
+        @heroku.create(app_name)
+        add_remote(app_name)
+        push(app_name)
+      end
+    ensure
+      Dir.chdir('..')
+      FileUtils.rm_rf('../cloudclone/cloudclone-server')
     end
-    Cloudclone::Group.new(name_prefix, @heroku)
+    Cloudclone::Group.new(group_name, @heroku)
   end
 
   def list
@@ -28,6 +38,20 @@ class Cloudclone::Client
 
   def groups
     list.map { |name| Cloudclone::Group.new(name, @heroku) }
+  end
+
+  private
+  def clone_server
+    `git clone git://github.com/visibletrap/cloudclone-server.git`
+  end
+
+  def add_remote(app_name)
+    `git remote add #{app_name} git@heroku.com:#{app_name}.git`
+  end
+
+  def push(app_name)
+    `heroku accounts:set #{ENV['HEROKU_ACCOUNT']}` if ENV['HEROKU_ACCOUNT']
+    `git push #{app_name} master`
   end
 
 end

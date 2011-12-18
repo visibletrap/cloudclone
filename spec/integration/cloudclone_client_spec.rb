@@ -29,6 +29,11 @@ describe "Cloudclone" do
     it "should return Cloundclone::Group object" do
       @output.should be_kind_of(Cloudclone::Group)
     end
+    it "should deploy cloudclone-server to app instances" do
+      require 'rest_client'
+      RestClient.get("http://#{app_names[0]}.heroku.com").should =~ /Cloudclone installed/
+      RestClient.get("http://#{app_names[1]}.heroku.com").should =~ /Cloudclone installed/
+    end
     after(:all) do
       app_names.each{ |a| heroku.destroy(a) }
     end
