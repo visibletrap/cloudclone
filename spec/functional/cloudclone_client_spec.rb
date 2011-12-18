@@ -75,11 +75,20 @@ describe "Cloudclone" do
   end
 
   describe "#groups" do
+    let(:group_name) { ["groups-group-name-1", "groups-group-name-2"] }
+    it "should return group objects" do
+      subject.create(group_name[0], 1)
+      subject.create(group_name[1], 1)
 
-  end
-
-  describe "#request" do
-
+      app_groups = subject.groups
+      app_groups[0].should be_kind_of(Cloudclone::Group)
+      app_groups[0].name.should == group_name[0]
+      app_groups[1].should be_kind_of(Cloudclone::Group)
+      app_groups[1].name.should == group_name[1]
+    end
+    after do
+      group_name.each{ |n| heroku.destroy("cc-#{n}-1") }
+    end
   end
 
 end
