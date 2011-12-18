@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Nuttanart Pornprasitsakul"]
   s.email       = ["visibletrap@gmail.com"]
   s.homepage    = ""
-  s.summary     = %q{Multi cloud service instances management}
+  s.summary     = %q{Library for manage multiple Heroku apps to do parallel HTTP request to certain web servers.}
   s.description = %q{This gem enable you to easily utilize free Heroku apps to build your own web load testing servers.}
 
   s.rubyforge_project = "cloudclone"
